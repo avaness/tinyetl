@@ -33,7 +33,7 @@ __all__ = ['JoinableQueue', 'Process', 'Queue', 'Value']
 
 import sys
 if not sys.platform.startswith('java'):
-    raise ImportError, 'jythonmultiprocessing is made for Jython'
+    raise ImportError('jythonmultiprocessing is made for Jython')
 
 from threading import Thread
 from Queue import Queue

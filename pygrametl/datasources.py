@@ -94,9 +94,8 @@ class SQLSource(object):
                     # psycopg2 cursor.
                     names = [t[0] for t in self.cursor.description]
                 if len(names) != len(data[0]):
-                    raise ValueError, \
-                        "Incorrect number of names provided. " + \
-                        "%d given, %d needed." % (len(names), len(data[0]))
+                    raise ValueError("Incorrect number of names provided. " + \
+                                     "%d given, %d needed." % (len(names), len(data[0])))
                 for row in data:
                     yield dict(zip(names, row))
         finally:
@@ -118,7 +117,7 @@ class ProcessSource(object):
              between the processes. 0 means unlimited. Default: 100
         """
         if type(batchsize) != int or batchsize < 1:
-            raise ValueError, 'batchsize must be a positive integer'
+            raise ValueError('batchsize must be a positive integer')
         self.__source = source
         self.__batchsize = batchsize
         self.__queue = Queue(queuesize)
@@ -138,7 +137,7 @@ class ProcessSource(object):
             if batch:
                 self.__queue.put(batch)
             self.__queue.put('STOP')
-        except Exception, e:
+        except Exception as e:
             if batch:
                 self.__queue.put(batch)
             self.__queue.put('EXCEPTION')
@@ -384,7 +383,7 @@ class RoundRobinSource(object):
         self.__sources = [iter(src) for src in sources]
         self.__sources.reverse() # we iterate it from the back in __iter__
         if not batchsize > 0:
-            raise ValueError, "batchsize must be positive"
+            raise ValueError("batchsize must be positive")
         self.__batchsize = batchsize
 
     def __iter__(self):
@@ -424,7 +423,7 @@ class DynamicForEachSource(object):
         """
         self.__queue = Queue()  # a multiprocessing.Queue
         if not callable(callee):
-            raise TypeError, 'callee must be callable'
+            raise TypeError('callee must be callable')
         self.__callee = callee
         for e in seq:
             # put them in a safe queue such that this object can be used from

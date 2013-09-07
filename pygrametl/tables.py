@@ -94,14 +94,14 @@ class Dimension(object):
              the default target connection is used.
         """
         if not type(key) in types.StringTypes:
-            raise ValueError, "Key argument must be a string"
+            raise ValueError("Key argument must be a string")
         if not len(attributes):
-            raise ValueError, "No attributes given"
+            raise ValueError("No attributes given")
 
         if targetconnection is None:
             targetconnection = pygrametl.getdefaulttargetconnection()
             if targetconnection is None:
-                raise ValueError, "No target connection available"
+                raise ValueError("No target connection available")
         self.targetconnection = targetconnection
         self.name = name
         self.attributes = attributes
@@ -242,8 +242,8 @@ class Dimension(object):
             return
 
         if self.key not in row:
-            raise KeyError, "The key value (%s) is missing in the row" % \
-                (self.key,)
+            raise KeyError("The key value (%s) is missing in the row" % \
+                           (self.key,))
 
         attstouse = [a for a in self.attributes \
                          if a in row or a in namemapping]
@@ -597,7 +597,7 @@ class SlowlyChangingDimension(Dimension):
                            idfinder, None, None, targetconnection)
 
         if not versionatt:
-            raise ValueError, 'A version attribute must be given'
+            raise ValueError('A version attribute must be given')
 
         self.versionatt = versionatt
         self.fromatt = fromatt
@@ -630,8 +630,8 @@ class SlowlyChangingDimension(Dimension):
         # attributes
         for var in (versionatt, fromatt, toatt):
             if var and var not in attributes:
-                raise ValueError, "%s not present in attributes argument" % \
-                    (var,)
+                raise ValueError("%s not present in attributes argument" % \
+                                 (var,))
 
         # Now extend the SQL from Dimension such that we use the versioning
         self.keylookupsql += " ORDER BY %s DESC" % (versionatt,)
@@ -971,9 +971,9 @@ class SnowflakedDimension(object):
                 refeddims = (refeddims, )
             for rd in refeddims:
                 if rd.targetconnection is not self.targetconnection:
-                    raise ValueError, "Different connections used"
+                    raise ValueError("Different connections used")
                 if rd in dims:
-                    raise ValueError, "The tables do not form a tree"
+                    raise ValueError("The tables do not form a tree")
                 dims.add(rd)
                 tmp = self.refs.get(dim, set())
                 tmp.add(rd)
@@ -991,7 +991,7 @@ class SnowflakedDimension(object):
                 dimscopy.remove(target)
         # Those dimensions that are left in dims at this point are unreachable
         if len(dimscopy) != 0:
-            raise ValueError, "Not every given dimension is reachable"
+            raise ValueError("Not every given dimension is reachable")
 
         # Construct SQL...
 
@@ -1004,7 +1004,7 @@ class SnowflakedDimension(object):
 
         # Make sure that there are no duplicated names:
         if len(self.allnames) != len(set(self.allnames)):
-            raise ValueError, "Duplicated attribute names found"
+            raise ValueError("Duplicated attribute names found")
 
         self.alljoinssql = "SELECT " + ", ".join(self.allnames) + \
             " FROM " + " NATURAL JOIN ".join(map(lambda d: d.name, dims))
@@ -1201,7 +1201,7 @@ class SnowflakedDimension(object):
         (key, insertdone) = self.__ensure_helper(self.root, row, namemapping, 
                                                  False)
         if not insertdone:
-            raise ValueError, "Member already present - nothing inserted"
+            raise ValueError("Member already present - nothing inserted")
         self._after_insert(row, namemapping, key)
         return key
 
@@ -1393,8 +1393,7 @@ class FactTable(object):
         elif compare:
             for m in self.measures:
                 if m in row and row[m] != res.get(m):
-                    raise ValueError, \
-                        "The existing fact has different measure values"
+                    raise ValueError("The existing fact has different measure values")
         return True
 
     def endload(self):
@@ -1696,7 +1695,7 @@ class SubprocessFactTable(object):
             # In Jython, we use threads for decoupling and we do not have
             # to prevent it.
             return
-        raise TypeError, 'A SubProcessFactTable cannot be decoupled'
+        raise TypeError('A SubProcessFactTable cannot be decoupled')
 
 
 class DecoupledDimension(pygrametl.parallel.Decoupled):
@@ -1770,7 +1769,7 @@ class DecoupledDimension(pygrametl.parallel.Decoupled):
         if hasattr(self._obj, 'scdensure'):
             return self._enqueue('scdensure', row, namemapping)
         else:
-            raise AttributeError, 'The object does not support scdensure'
+            raise AttributeError('The object does not support scdensure')
 
 
 class DecoupledFactTable(pygrametl.parallel.Decoupled):
@@ -1828,14 +1827,14 @@ class DecoupledFactTable(pygrametl.parallel.Decoupled):
         if hasattr(self._obj, 'lookup'):
             return self._enqueue('lookup', row, namemapping)
         else:
-            raise AttributeError, 'The object does not support lookup'
+            raise AttributeError('The object does not support lookup')
         
     def ensure(self, row, namemapping={}):
         """Invoke ensure on the decoupled FactTable in the separate process"""
         if hasattr(self._obj, 'ensure'):
             return self._enqueue('ensure', row, namemapping)
         else:
-            raise AttributeError, 'The object does not support ensure'
+            raise AttributeError('The object does not support ensure')
 
 
 #######
@@ -1912,9 +1911,9 @@ class DimensionPartitioner(BasePartitioner):
         self.key = parts[0].key
         for p in parts:
             if not p.lookupatts == self.lookupatts:
-                raise ValueError, 'The parts must have the same lookupatts'
+                raise ValueError('The parts must have the same lookupatts')
             if not p.key == self.key:
-                raise ValueError, 'The parts must have the same key'
+                raise ValueError('The parts must have the same key')
         if partitioner is not None:
             self.partitioner = partitioner
         else:
@@ -2017,8 +2016,7 @@ class FactTablePartitioner(BasePartitioner):
         for ft in parts:
             if not (self.keyrefs == ft.keyrefs and \
                         self.measures == ft.measures):
-                raise ValueError, \
-                    'The parts must have the same measures and keyrefs'
+                raise ValueError('The parts must have the same measures and keyrefs')
 
     def getpart(self, row, namemapping={}):
         """Return the relevant part for the given row """

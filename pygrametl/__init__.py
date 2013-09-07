@@ -43,7 +43,9 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import copy as pcopy
+
 import exceptions
+
 import types
 from datetime import date, datetime
 from Queue import Queue
@@ -276,7 +278,7 @@ def setdefaults(row, attributes, defaults=None):
        - defaults is a sequence of default values (see above)
     """
     if defaults and len(defaults) != len(attributes):
-        raise ValueError, "Lists differ in length"
+        raise ValueError("Lists differ in length")
 
     if defaults:
         seqlist = zip(attributes, defaults)
@@ -444,9 +446,8 @@ def datespan(fromdate, todate, fromdateincl=True, todateincl=True,
     for arg in (fromdate, todate):
         if not ((type(arg) in types.StringTypes and arg.count('-') == 2)\
                     or isinstance(arg, date)):
-            raise ValueError, \
-            "fromdate and today must be datetime.dates or " + \
-            "YYYY-MM-DD formatted strings"
+            raise ValueError("fromdate and today must be datetime.dates or " + \
+                             "YYYY-MM-DD formatted strings")
 
     (year, month, day) = fromdate.split('-')
     fromdate = date(int(year), int(month), int(day))
@@ -537,8 +538,8 @@ class ConnectionWrapper(object):
             try:
                 self.__translate = getattr(self, '_translate2' + paramstyle)
             except AttributeError:
-                raise InterfaceError, "The paramstyle '%s' is not supported" %\
-                    paramstyle
+                raise InterfaceError("The paramstyle '%s' is not supported" % \
+                                     paramstyle)
         else:
             self.__translate = None
 
@@ -801,8 +802,8 @@ class BackgroundConnectionWrapper(object):
             try:
                 self.__translate = getattr(self, '_translate2' + paramstyle)
             except AttributeError:
-                raise InterfaceError, "The paramstyle '%s' is not supported" %\
-                    paramstyle
+                raise InterfaceError("The paramstyle '%s' is not supported" % \
+                                     paramstyle)
         else:
             self.__translate = None
 
